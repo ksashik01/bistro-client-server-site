@@ -40,6 +40,9 @@ async function run() {
 
 const menuCollection = client.db("bistroDb").collection("menu");
 const reviwCollection = client.db("bistroDb").collection("reviews");
+const cartCollection = client.db("bistroDb").collection("carts");
+
+
 
 app.get('/menu', async (req, res) =>{
     const result = await menuCollection.find().toArray();
@@ -51,8 +54,25 @@ app.get('/menu', async (req, res) =>{
     res.send(result)
   })
 
+// Card Cooletion-------
 
+app.get('/carts', async (req, res) =>{
+  const email = req.query.email;
+  if (!email){
+    res.send ([]);
+  }
+const query = {email: email};
+const result = await cartCollection.find(query).toArray();
+res.send(result)
+  })
 
+app.post('/carts', async (req, res) =>{
+  const item = req.body;
+  console.log(item)
+
+  const result = await cartCollection.insertOne(item);
+  res.send(result)
+})
 
 
 

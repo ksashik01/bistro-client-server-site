@@ -1,5 +1,8 @@
 const express = require ('express');
 const cors = require('cors');
+var jwt = require('jsonwebtoken');
+require ('dotenv').config()
+
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
@@ -108,6 +111,31 @@ app.delete('/carts/:id', async(req, res) =>{
 
 
 
+// update User-----------
+
+app.patch('/users/admin/:id', async (req, res) => {
+  const id = req.params.id;
+  console.log(id);
+  const filter = { _id: new ObjectId(id) };
+  const updateDoc = {
+    $set: {
+      role: 'admin'
+    },
+  };
+
+  const result = await usersCollection.updateOne(filter, updateDoc);
+  res.send(result);
+
+})
+
+
+// Jwt------
+app.post('/jwt', (req, res) => {
+  const user = req.body;
+  const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+
+  res.send({ token })
+})
 
 
 
@@ -143,4 +171,21 @@ app.get ('/', (req,res) =>{
 app.listen(port, () =>{
 
     console.log (`Bistro Boss Is Sitting On Port ${port}`)
+
+
+
+
 })
+
+
+
+
+
+
+
+
+
+
+
+
+// ACCESS_TOKEN_SECRET=4e3f5c4f2ef776c7f2ef8ffa583c502770747cd8488fa438ea283550c7f69a5cb59c16ff5ae08f1031494d71f87927d99c9d2c626eb1dc512c256c36cf827e88
